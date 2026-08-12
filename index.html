@@ -1796,69 +1796,27 @@ function initBootLaptop(){
   screenGlow.position.set(0, 0.85, 0.01);
   lidGroup.add(screenGlow);
 
-  // Logo RAFAZ: una "R" grande y luminosa en la pantalla del portátil.
-  // Se dibuja en un canvas y se convierte en textura 3D para que viaje con la tapa.
-  const logoCanvas = document.createElement('canvas');
-  logoCanvas.width = 512; logoCanvas.height = 512;
-  const logoCtx = logoCanvas.getContext('2d');
+  // Logo RAFAZ ORIGINAL en la pantalla del portátil.
+  // Reutilizamos exactamente el PNG del logo que ya está incrustado en este HTML.
+  // No se dibuja una R nueva ni se añade ningún círculo adicional.
+  const originalLogo = document.querySelector('.hero-logo, .rafaz-exact-logo');
+  const logoTexture = new THREE.TextureLoader().load(
+    originalLogo ? originalLogo.src : '',
+    () => { logoTexture.colorSpace = THREE.SRGBColorSpace; logoTexture.needsUpdate = true; }
+  );
 
-  function drawRLogo(pulse){
-    const c = logoCtx;
-    c.clearRect(0,0,512,512);
-    const glow = c.createRadialGradient(256,256,35,256,256,220);
-    glow.addColorStop(0, 'rgba(216,180,254,'+(0.30+pulse*0.18)+')');
-    glow.addColorStop(1, 'rgba(168,85,247,0)');
-    c.fillStyle = glow; c.fillRect(0,0,512,512);
-
-    c.save();
-    c.translate(256,256);
-    c.shadowColor = '#c084fc';
-    c.shadowBlur = 28 + pulse*16;
-    c.strokeStyle = '#f3edff';
-    c.lineWidth = 34;
-    c.lineCap = 'round';
-    c.lineJoin = 'round';
-
-    // R geométrica estilizada.
-    c.beginPath();
-    c.moveTo(-115,130);
-    c.lineTo(-115,-135);
-    c.lineTo(5,-135);
-    c.bezierCurveTo(105,-135,150,-88,150,-10);
-    c.bezierCurveTo(150,65,104,104,8,104);
-    c.lineTo(-112,104);
-    c.stroke();
-
-    c.beginPath();
-    c.moveTo(8,104);
-    c.lineTo(155,145);
-    c.stroke();
-
-    // Núcleo morado para darle profundidad.
-    c.shadowBlur = 0;
-    c.strokeStyle = '#a855f7';
-    c.lineWidth = 10;
-    c.stroke();
-    c.restore();
-  }
-
-  drawRLogo(0);
-  const logoTexture = new THREE.CanvasTexture(logoCanvas);
-  logoTexture.colorSpace = THREE.SRGBColorSpace;
   const logoMaterial = new THREE.MeshBasicMaterial({
-    map:logoTexture, transparent:true, opacity:0
+    map: logoTexture,
+    transparent: true,
+    opacity: 0
   });
-  const logoPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.9), logoMaterial);
+
+  const logoPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.05, 1.05),
+    logoMaterial
+  );
   logoPlane.position.set(0, 0.85, 0.018);
   lidGroup.add(logoPlane);
-
-  // Halo circular detrás de la R.
-  const logoHalo = new THREE.Mesh(
-    new THREE.RingGeometry(0.48,0.53,64),
-    new THREE.MeshBasicMaterial({color:0xc084fc, transparent:true, opacity:0, side:THREE.DoubleSide})
-  );
-  logoHalo.position.set(0,0.85,0.012);
-  lidGroup.add(logoHalo);
 
   scene.add(new THREE.PointLight(0xa855f7, 3, 20).translateX(2).translateY(2).translateZ(3));
   scene.add(new THREE.PointLight(0xffffff, 1, 20).translateX(-2).translateY(1).translateZ(2));
@@ -1894,12 +1852,8 @@ function initBootLaptop(){
       lidGroup.rotation.x = (Math.PI/2 * 0.98) * (1 - eased);
       screenGlow.material.opacity = eased * 0.85;
       logoMaterial.opacity = eased;
-      logoHalo.material.opacity = eased * 0.72;
       const pulse = 0.5 + 0.5 * Math.sin(Date.now()*0.004);
-      drawRLogo(pulse);
-      logoTexture.needsUpdate = true;
-      logoPlane.scale.setScalar(0.88 + pulse*0.08);
-      logoHalo.scale.setScalar(0.92 + pulse*0.12);
+      logoPlane.scale.setScalar(0.94 + pulse*0.035);
       scene.rotation.y = Math.sin(eased * Math.PI) * 0.15;
     }
     renderer.render(scene, camera);
