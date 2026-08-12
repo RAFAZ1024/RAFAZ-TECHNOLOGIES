@@ -1,13 +1,8 @@
-RAFAZ Technologies - Web
+RAFAZ Technologies - GitHub Pages FIX
 
-Archivos:
-- index.html: página principal, lista para hosting estático.
-- assets/: imágenes que estaban incrustadas dentro del HTML.
+Sube estos 3 archivos al mismo nivel del repositorio:
+- index.html
+- rafaz-image-1.png
+- rafaz-image-2.png
 
-Recursos externos que NO necesitan descargarse:
-- Google Fonts
-- Three.js
-
-Para publicar:
-1. Sube index.html y la carpeta assets/ al mismo nivel.
-2. Mantén la estructura de carpetas.
+No necesitas crear la carpeta assets para esta versión.
